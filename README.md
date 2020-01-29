@@ -1,3 +1,3 @@
 # shopApp
 
--udemy course added typescript
+- React Native udemy course added typescript
