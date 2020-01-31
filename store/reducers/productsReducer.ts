@@ -28,16 +28,13 @@ const productsReducer = (state = productsReducerDefaultState, action: ProductAct
             }
         }
         case EDIT_PRODUCT: {
-
-            console.log('***REDCE', action.product.title);
-
             const productIndex = state.userProducts.findIndex(
                 prod => prod.id === action.product.id
             );
             const updatedUserProducts = [...state.userProducts];
             updatedUserProducts[productIndex] = action.product;
 
-            const availableProductIndex = state.userProducts.findIndex(
+            const availableProductIndex = state.availableProducts.findIndex(
                 prod => prod.id === action.product.id
             );
             const updatedAvailableProducts = [...state.availableProducts];

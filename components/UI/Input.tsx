@@ -3,11 +3,10 @@ import { View, Text, TextInput, StyleSheet } from 'react-native'
 
 interface Props {
     label: string
-    value: string
+    initialValue?: string
     keyboardType?: any
-    initialValue?: any
     initiallyValid?: boolean
-    required: boolean
+    required?: boolean
     minLength?: number
     min?: number
     max?: number
@@ -20,15 +19,13 @@ const INPUT_CHANGE = 'INPUT_CHANGE'
 const INPUT_BLUR = 'INPUT_BLUR';
 
 const inputReducer = (state, action) => {
-
-
     switch (action.type) {
         case INPUT_CHANGE:
-
             return {
                 ...state,
                 value: action.value,
-                isValid: action.isValid
+                isValid: action.isValid,
+                touched: true
             };
         case INPUT_BLUR:
             return {
@@ -40,17 +37,20 @@ const inputReducer = (state, action) => {
     }
 }
 const Input = (props: Props) => {
+
     const [inputState, dispatch] = useReducer(inputReducer, {
         value: props.initialValue ? props.initialValue : '',
         isValid: props.initiallyValid,
         touched: false
     })
+
     const { onInputChange, id } = props;
     useEffect(() => {
         if (inputState.touched) {
-            onInputChange(id, inputState.value, inputState.isValid);
+            props.onInputChange(id, inputState.value, inputState.isValid)
         }
-    }, [inputState, onInputChange, id]);
+    }, [inputState, onInputChange, id])
+
 
     const textChangeHandler = text => {
         const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -89,8 +89,8 @@ const Input = (props: Props) => {
                 onBlur={lostFocusHandler}
             >
             </TextInput>
-            {!inputState.isValid && <Text>Please enter a valid {props.label}!</Text>}
-        </View>
+            {!inputState.isValid && inputState.touched && <Text> Please enter a valid {props.label}!</Text>}
+        </View >
     )
 }
 
