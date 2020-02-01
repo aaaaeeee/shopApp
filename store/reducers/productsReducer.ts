@@ -1,15 +1,40 @@
 import PRODUCTS from '../../data/dummy-data';
 
 import { Product } from '../../types/product'
-import { ProductActionTypes, DELETE_PRODUCT, ADD_PRODUCT, EDIT_PRODUCT } from '../../types/actions';
+import { ProductActionTypes, DELETE_PRODUCT, ADD_PRODUCT, EDIT_PRODUCT, SET_PRODUCTS } from '../../types/actions';
 
 const productsReducerDefaultState = {
-    availableProducts: PRODUCTS,
-    userProducts: PRODUCTS.filter(prod => prod.ownerId === 'u1')
+    availableProducts: [],
+    userProducts: []
 }
 
 const productsReducer = (state = productsReducerDefaultState, action: ProductActionTypes) => {
     switch (action.type) {
+        case SET_PRODUCTS:
+            console.log('***OLAANKO täällä', action.products);
+            const loadedProducts = []
+            let product
+            for (const key in action.products) {
+                console.log('**key', key);
+                product = {
+                    id: key,
+                    ownerId: 'u1',
+                    title: action.products[key].title,
+                    imageUrl: action.products[key].imageUrl,
+                    price: action.products[key].price,
+                    description: action.products[key].description
+                }
+                loadedProducts.push(product)
+            }
+
+            console.log('***', loadedProducts);
+
+            return {
+                ...state,
+                availableProducts: loadedProducts,
+                userProducts: loadedProducts.filter(prod => prod.ownerId === 'u1')
+            }
+
         case DELETE_PRODUCT:
             return {
                 ...state,

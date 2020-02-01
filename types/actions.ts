@@ -1,5 +1,6 @@
 import { Product } from "./product";
 import { Cart } from "./cart";
+import { ThunkAction, ThunkDispatch } from 'redux-thunk'
 
 export const SET_PRODUCTS = "SET_PRODUCTS"
 export const ADD_TO_CART = 'ADD_TO_CART'
@@ -8,11 +9,16 @@ export const ADD_ORDER = 'ADD_ORDER'
 export const DELETE_PRODUCT = 'DELETE_PRODUCT'
 export const ADD_PRODUCT = 'ADD_PRODUCT'
 export const EDIT_PRODUCT = 'EDIT_PRODUCT'
+export const CREATE_PRODUCT = 'CREATE_PRODUCT'
+export const FETCH_PRODUCT = 'FETCH_PRODUCT'
 export interface SetProductsAction {
     type: typeof SET_PRODUCTS;
     products: Product[]
 }
 
+export interface SetFetching {
+    type: 'FETCH_PRODUCT'
+}
 export interface DeleteProductAction {
     type: typeof DELETE_PRODUCT;
     id: string
@@ -40,6 +46,7 @@ export interface AddOrdersAction {
     orders: any
     totalAmount: number
 }
+
 export type ProductActionTypes =
     SetProductsAction |
     AddToCartAction |
@@ -47,6 +54,7 @@ export type ProductActionTypes =
     AddOrdersAction |
     DeleteProductAction |
     AddProductAction |
-    EditProductAction
+    EditProductAction |
+    SetFetching
 
 export type AppActions = ProductActionTypes

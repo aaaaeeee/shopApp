@@ -1,5 +1,5 @@
-import React from 'react'
-import { FlatList, Button } from 'react-native';
+import React, { useState, useEffect, useCallback } from 'react'
+import { View, FlatList, Button, ActivityIndicator, Text } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux'
 import { HeaderButtons, Item } from 'react-navigation-header-buttons'
 import HeaderButton from '../../components/UI/HeaderButton'
@@ -7,12 +7,36 @@ import { Product } from '../../types/product';
 import { AppState } from '../../store/configureStore';
 import ProductItem from '../../components/shop/ProductItem';
 import { addToCart } from '../../store/actions/cartAction'
+import { fetchProduct } from '../../store/actions/productsAction'
 import Colors from '../../constants/Colors';
 
 
+
 const ProductsOverviewScreen = (props: any) => {
+    const [isLoading, setIsLoading] = useState(false)
+    const [error, setError] = useState()
     const products: Product[] = useSelector((state: AppState) => state.products.availableProducts)
     const dispatch = useDispatch();
+    const loadProducts = useCallback(async () => {
+        setIsLoading(true)
+        try {
+            await dispatch(fetchProduct());
+        } catch (err) {
+            setError(err.message)
+        }
+        setIsLoading(false)
+    }, [dispatch, setIsLoading])
+
+    useEffect(() => {
+        loadProducts();
+    }, [dispatch])
+
+    useEffect(() => {
+        const willFocusSub = props.navigation.addListener('willFocus', loadProducts)
+        return () => {
+            willFocusSub.remove()
+        }
+    }, [loadProducts])
 
     const selectItemHandler = (id, title) => {
         props.navigation.navigate('ProductDetail',
@@ -20,6 +44,18 @@ const ProductsOverviewScreen = (props: any) => {
                 productId: id,
                 productTitle: title
             })
+    }
+    if (error) {
+        <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+            <Text>Error Occured!!!</Text>
+        </View>
+    }
+    if (isLoading) {
+        return (
+            <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+                <ActivityIndicator size="large" color={Colors.primary} />
+            </View>
+        )
     }
     return <FlatList data={products} renderItem={itemData =>
         <ProductItem
