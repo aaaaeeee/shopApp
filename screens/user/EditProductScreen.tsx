@@ -7,6 +7,7 @@ import {
   StyleSheet,
   Alert,
   KeyboardAvoidingView,
+  ActivityIndicator,
 } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
@@ -44,6 +45,8 @@ const formReducer = (state, action) => {
 };
 
 const EditProductScreen = (props) => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState();
   const productId = props.navigation.getParam("productId");
   const editedProduct: Product = useSelector((state: AppState) =>
     state.products.userProducts.find((prod) => prod.id === productId)
@@ -66,33 +69,47 @@ const EditProductScreen = (props) => {
     },
     formIsValid: editedProduct ? true : false,
   });
-  const submitHandler = useCallback(() => {
+
+  useEffect(() => {
+    if (error) {
+      Alert.alert("An error occured", error, [{ text: "Okay!" }]);
+    }
+  }, [error]);
+
+  const submitHandler = useCallback(async () => {
     if (!formState.formIsValid) {
       Alert.alert("Wrong input", "Check teh errors", [{ text: "Okay" }]);
       return;
     }
-
-    if (editedProduct) {
-      const updatedProduct = {
-        id: editedProduct.id,
-        ownerId: editedProduct.ownerId,
-        price: editedProduct.price,
-        title: formState.inputValues.title,
-        imageUrl: formState.inputValues.imageUrl,
-        description: formState.inputValues.description,
-      };
-      dispatch(editProduct(updatedProduct));
-    } else {
-      const newProduct = {
-        ownerId: "u1",
-        title: formState.inputValues.title,
-        imageUrl: formState.inputValues.imageUrl,
-        price: formState.inputValues.price,
-        description: formState.inputValues.description,
-      };
-      dispatch(addProduct(newProduct));
+    setError(null);
+    setIsLoading(true);
+    try {
+      if (editedProduct) {
+        const updatedProduct = {
+          id: editedProduct.id,
+          ownerId: editedProduct.ownerId,
+          price: editedProduct.price,
+          title: formState.inputValues.title,
+          imageUrl: formState.inputValues.imageUrl,
+          description: formState.inputValues.description,
+        };
+        await dispatch(editProduct(updatedProduct));
+      } else {
+        const newProduct = {
+          ownerId: "u1",
+          title: formState.inputValues.title,
+          imageUrl: formState.inputValues.imageUrl,
+          price: formState.inputValues.price,
+          description: formState.inputValues.description,
+        };
+        await dispatch(addProduct(newProduct));
+      }
+      props.navigation.goBack();
+    } catch (err) {
+      setError(err.message);
     }
-    props.navigation.goBack();
+
+    setIsLoading(false);
   }, [dispatch, productId, formState]);
 
   useEffect(() => {
@@ -111,6 +128,11 @@ const EditProductScreen = (props) => {
     [formDispatch]
   );
 
+  if (isLoading) {
+    <View style={styles.centered}>
+      <ActivityIndicator size="large"></ActivityIndicator>
+    </View>;
+  }
   return (
     <KeyboardAvoidingView
       style={{ flex: 1 }}
@@ -152,23 +174,6 @@ const EditProductScreen = (props) => {
             initiallyValid={!!editedProduct}
             required
           />
-          {/* <View style={styles.formControl}>
-                    <Text style={styles.label}>Title</Text>
-                    <TextInput style={styles.input} value={formState.inputValues.title} onChangeText={textChangeHandler.bind(this, 'title')} ></TextInput>
-                </View> */}
-          {/* <View style={styles.formControl}>
-                    <Text style={styles.label}>Image URL</Text>
-                    <TextInput style={styles.input} value={formState.inputValues.imageUrl} onChangeText={textChangeHandler.bind(this, 'imageUrl')}></TextInput>
-                </View>
-                {editedProduct ? null : (
-                    <View style={styles.formControl}>
-                        <Text style={styles.label}>Price</Text>
-                        <TextInput style={styles.input} value={formState.inputValues.price} onChangeText={textChangeHandler.bind(this, 'price')}></TextInput>
-                    </View>)}
-                <View style={styles.formControl}>
-                    <Text style={styles.label}>Description</Text>
-                    <TextInput style={styles.input} value={formState.inputValues.description} onChangeText={textChangeHandler.bind(this, 'description')}></TextInput>
-                </View> */}
         </View>
       </ScrollView>
     </KeyboardAvoidingView>
@@ -211,6 +216,11 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     borderBottomColor: "#ccc",
     borderBottomWidth: 1,
+  },
+  centered: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
 

@@ -59,8 +59,9 @@ export const addProduct = (
       }
     );
     const resData = await response.json();
-    console.log("***", resData);
-
+    if (!response.ok) {
+      throw new Error("Something went wrong");
+    }
     dispatch({
       type: "ADD_PRODUCT",
       product,
@@ -88,7 +89,9 @@ export const editProduct = (
         }),
       }
     );
-
+    if (!response.ok) {
+      throw new Error("Something went wrong");
+    }
     dispatch({
       type: "EDIT_PRODUCT",
       product,
