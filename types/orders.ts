@@ -1,10 +1,10 @@
 interface Orders {
-    orders: Order[]
+  orders: any[];
 }
 
 interface Order {
-    id: string
-    items: any
-    date: string
-    totalAmount: string
+  id: string;
+  items: any;
+  date: string;
+  totalAmount: string;
 }

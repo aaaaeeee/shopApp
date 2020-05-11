@@ -10,7 +10,7 @@ export const DELETE_PRODUCT = "DELETE_PRODUCT";
 export const ADD_PRODUCT = "ADD_PRODUCT";
 export const EDIT_PRODUCT = "EDIT_PRODUCT";
 export const CREATE_PRODUCT = "CREATE_PRODUCT";
-export const FETCH_PRODUCT = "FETCH_PRODUCT";
+export const FETCH_ORDERS = "FETCH_ORDERS";
 export interface SetProductsAction {
   type: typeof SET_PRODUCTS;
   products: Product[];
@@ -47,6 +47,10 @@ export interface AddOrdersAction {
   orders: any;
   totalAmount: number;
 }
+export interface FetchOrdersAction {
+  type: typeof FETCH_ORDERS;
+  orders: any[];
+}
 
 export type ProductActionTypes =
   | SetProductsAction
@@ -56,6 +60,6 @@ export type ProductActionTypes =
   | DeleteProductAction
   | AddProductAction
   | EditProductAction
-  | SetFetching;
+  | FetchOrdersAction;
 
 export type AppActions = ProductActionTypes;

@@ -1,4 +1,4 @@
-import { AppActions, SET_PRODUCTS, FETCH_PRODUCT } from "../../types/actions";
+import { AppActions } from "../../types/actions";
 import { Product } from "../../types/product";
 import { ThunkAction, ThunkDispatch } from "redux-thunk";
 
