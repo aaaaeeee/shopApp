@@ -1,6 +1,7 @@
 import { Product } from "./product";
 import { Cart } from "./cart";
 import { ThunkAction, ThunkDispatch } from "redux-thunk";
+import { SignUp, LogIn } from "./auth";
 
 export const SET_PRODUCTS = "SET_PRODUCTS";
 export const ADD_TO_CART = "ADD_TO_CART";
@@ -11,6 +12,8 @@ export const ADD_PRODUCT = "ADD_PRODUCT";
 export const EDIT_PRODUCT = "EDIT_PRODUCT";
 export const CREATE_PRODUCT = "CREATE_PRODUCT";
 export const FETCH_ORDERS = "FETCH_ORDERS";
+export const SIGN_UP = "SIGN_UP";
+export const LOGIN = "LOGIN";
 export interface SetProductsAction {
   type: typeof SET_PRODUCTS;
   products: Product[];
@@ -52,6 +55,16 @@ export interface FetchOrdersAction {
   orders: any[];
 }
 
+export interface SignUpAction {
+  type: typeof SIGN_UP;
+  signup: SignUp;
+}
+
+export interface LogInAction {
+  type: typeof LOGIN;
+  login: LogIn;
+}
+
 export type ProductActionTypes =
   | SetProductsAction
   | AddToCartAction
@@ -60,6 +73,8 @@ export type ProductActionTypes =
   | DeleteProductAction
   | AddProductAction
   | EditProductAction
-  | FetchOrdersAction;
+  | FetchOrdersAction
+  | SignUpAction
+  | LogInAction;
 
 export type AppActions = ProductActionTypes;

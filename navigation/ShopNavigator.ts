@@ -13,6 +13,7 @@ import OrdersScreen from "../screens/shop/OrdersScreen";
 import UserScreen from "../screens/user/UserProductsScreen";
 import EditScreen from "../screens/user/EditProductScreen";
 import Colors from "../constants/Colors";
+import AuthScreen from "../screens/user/AuthScreen";
 
 const defaultNaviOptions = {
   headerStyle: {
@@ -70,4 +71,18 @@ const ShopNavigator = createDrawerNavigator(
   }
 );
 
-export default createAppContainer(ShopNavigator);
+const AuthNavigator = createStackNavigator(
+  {
+    Auth: AuthScreen,
+  },
+  {
+    defaultNavigationOptions: defaultNaviOptions,
+  }
+);
+
+const MainNavigator = createSwitchNavigator({
+  Auth: AuthNavigator,
+  Shop: ShopNavigator,
+});
+
+export default createAppContainer(MainNavigator);
